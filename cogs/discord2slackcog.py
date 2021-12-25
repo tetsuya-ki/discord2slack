@@ -40,15 +40,35 @@ class Discord2SlackCog(commands.Cog):
         avatar_url = str(message.author.avatar_url).replace('.webp', '.png')
         guild_icon_url = str(message.guild.icon_url).replace('.webp', '.png')
         name = setting.DISCORD_NAME if setting.DISCORD_NAME else message.guild.name
-        data =  json.dumps({'attachments': [{
-                    'mrkdwn_in': ['text'],
-                    'author_name': message.author.display_name,
-                    'author_icon': avatar_url,
-                    'text': message.clean_content,
-                    'footer_icon': guild_icon_url,
-                    'footer': f'{name}@Discord Channel from: {message.channel.name}'
-                }]
-            })
+
+        # 本文
+        main = {
+            'mrkdwn_in': ['text'],
+            'author_name': message.author.display_name,
+            'author_icon': avatar_url,
+            'text': message.clean_content,
+            'footer_icon': guild_icon_url,
+            'footer': f'{name}@Discord Channel from: {message.channel.name}'
+        }
+
+        # 画像部
+        images = []
+        if len(message.attachments) != 0:
+            for i, attachment in enumerate(message.attachments):
+                if attachment.filename.endswith(('.jpg','.jpeg','.png','.gif',)):
+                    image = {
+                        'mrkdwn_in': ['text'],
+                        'text': f'image - {i + 1}',
+                        'image_url': attachment.url,
+                    }
+                    images.append(image)
+
+        LOG.debug(main)
+        datas = []
+        datas.append(main)
+        datas.extend(images)
+        data =  json.dumps({'attachments': datas})
+        LOG.debug(data)
 
         # 設定ないなら何もしない
         if setting.SLACK_WEBHOOK_URL is None:
