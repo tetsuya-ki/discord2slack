@@ -39,13 +39,14 @@ class Discord2SlackCog(commands.Cog):
     async def post_to_slack(self, message: discord.Message):
         avatar_url = str(message.author.avatar_url).replace('.webp', '.png')
         guild_icon_url = str(message.guild.icon_url).replace('.webp', '.png')
+        name = setting.DISCORD_NAME if setting.DISCORD_NAME else message.guild.name
         data =  json.dumps({'attachments': [{
                     'mrkdwn_in': ['text'],
                     'author_name': message.author.display_name,
                     'author_icon': avatar_url,
                     'text': message.clean_content,
                     'footer_icon': guild_icon_url,
-                    'footer': f'お茶会@Discord Channel from: {message.channel.name}'
+                    'footer': f'{name}@Discord Channel from: {message.channel.name}'
                 }]
             })
 
