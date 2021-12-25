@@ -41,12 +41,49 @@ class Discord2SlackCog(commands.Cog):
         guild_icon_url = str(message.guild.icon_url).replace('.webp', '.png')
         name = setting.DISCORD_NAME if setting.DISCORD_NAME else message.guild.name
 
+        # Embed
+        fields = []
+        if len(message.embeds) != 0:
+            for embed in message.embeds:
+                dicted_data = embed.to_dict()
+                LOG.info(dicted_data)
+                description = f'>>> {embed.description}'
+                field = {
+                            'title' : 'Embed Text'
+                            , 'value' : description
+                        }
+                FIELDS = 'fields'
+                CREATED_AT = '作成日時'
+                FROM_CHANNEL = '元のチャンネル'
+                NAME = 'name'
+                VALUE = 'value'
+                fields.append(field)
+                if FIELDS in dicted_data:
+                    discord_fields = dicted_data[FIELDS]
+                    LOG.info(discord_fields)
+                    for discord_field in discord_fields:
+                        if CREATED_AT == discord_field[NAME]:
+                            field = {
+                                'title' : CREATED_AT
+                                , 'value' : discord_field[VALUE]
+                                , 'short' : 'true'
+                            }
+                        elif FROM_CHANNEL == discord_field[NAME]:
+                            channel_name = self._get_channel_name(discord_field[VALUE], message.guild)
+                            field = {
+                                'title' : FROM_CHANNEL
+                                , 'value' : f'#{channel_name}'
+                                , 'short' : 'true'
+                            }
+                        fields.append(field)
+
         # 本文
         main = {
             'mrkdwn_in': ['text'],
             'author_name': message.author.display_name,
             'author_icon': avatar_url,
             'text': message.clean_content,
+            'fields': fields,
             'footer_icon': guild_icon_url,
             'footer': f'{name}@Discord Channel from: {message.channel.name}'
         }
@@ -79,6 +116,17 @@ class Discord2SlackCog(commands.Cog):
             async with session.post(setting.SLACK_WEBHOOK_URL, data=data, headers=headers) as resp:
                 resp_text = await resp.text()
                 LOG.info(f'Post to Slack! status:{resp.status} / text:{resp_text}')
+
+    def _get_channel_name(self, text:str, guild:discord.Guild):
+        if text.count('#') == 1:
+            channel_id = text.split('#')[1].split('>')[0]
+            LOG.debug(f'check channel:{channel_id}')
+            channel_info = None
+            if channel_id.isdecimal():
+                channel_info = guild.get_channel(int(channel_id))
+            if channel_info is not None:
+                return channel_info.name
+        return '不明なチャンネル'
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
 def setup(bot):
