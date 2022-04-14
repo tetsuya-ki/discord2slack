@@ -21,6 +21,8 @@ yarl = "1.5.1"
 toml = "^0.10.2"
 pycryptodome = "^3.10.1"
 discord-py-interactions = "^3.0.2"
+slack-bolt = "^1.13.0"
+requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
 
