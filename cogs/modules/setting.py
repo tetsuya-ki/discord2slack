@@ -37,6 +37,12 @@ def get_split_data(str):
     '''
     return [] if str is None else list(map(int, str.split(';')))
 
+def get_split_str(str):
+    '''
+    「,」で分割したリストを取得
+    '''
+    return [] if str is None else list(str.split(','))
+
 # 環境変数をファイルから読み込む
 load_dotenv(verbose=True)
 dotenv_path = join(dirname(__file__), 'files' + os.sep + '.env')
@@ -50,3 +56,7 @@ ALLOW_CHANNELS = get_split_data(os.environ.get('ALLOW_CHANNELS'))
 SLACK_WEBHOOK_URL = os.environ.get('SLACK_WEBHOOK_URL')
 IGNORE_WEBHOOK_ID = os.environ.get('IGNORE_WEBHOOK_ID')
 DISCORD_NAME = os.environ.get('DISCORD_NAME')
+SLACK_BOT_TOKEN = os.environ.get('SLACK_BOT_TOKEN')
+SLACK_APP_TOKEN = os.environ.get('SLACK_APP_TOKEN')
+SLACK_BOT_IDS = get_split_str(os.environ.get('SLACK_BOT_IDS'))
+DISCORD_WEBHOOK_URL = os.environ.get('DISCORD_WEBHOOK_URL')

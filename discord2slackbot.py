@@ -2,9 +2,9 @@ from cogs.modules import setting
 from discord.ext import commands
 from logging import basicConfig, getLogger
 from datetime import timedelta, timezone
-from cogs.modules import setting
-import discord, os, datetime
+import discord, datetime
 import keep_alive
+import slack2discord
 
 # 時間
 JST = timezone(timedelta(hours=9), 'JST')
@@ -45,4 +45,5 @@ if __name__ == '__main__':
 
     # start a server
     keep_alive.keep_alive()
+    slack2discord.start_slack2discord()
     bot.run(setting.DISCORD_TOKEN)
