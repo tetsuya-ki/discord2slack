@@ -52,7 +52,7 @@
 
 - 必須です。あなたのSlackのAPPトークンを記載（トークンは厳重に管理し、公開されないよう配慮すること！）
   - `Basic Information`の`App-Level Tokens`から取得
-  - `Generate Token and Scopes`ボタンを押して、`App-level tokens`を取得する必要あり
+  - `Generate Token and Scopes`ボタンを押して、`App-level tokens`を取得する必要あり(Scopeは`connections:write`)
 - 例: SLACK_BOT_TOKEN="xapp-1-987654321123"
 
 ### SLACK_BOT_IDS
@@ -63,7 +63,7 @@
 - 例:
   - `https://hooks.slack.com/services/<team_id>/<BOT_ID>/<WEBHOOK_ID>`
     - SlackのWebhookを作るとこういう感じでURLが取得できるとする(上はテキトーです)
-    - まんなかのやつがここで設定したいBOT_IDです
+    - まんなかのやつ(BOT_ID)がココで設定したいBOT_IDです
     - 無視したいWEBHOOKが複数ある場合もあると思うのでこういう形式にしています
 
 ### DISCORD_WEBHOOK_URL
@@ -76,25 +76,18 @@
 
 - poetryがインストールされていること
 - Slack側でAppが作成されており、BOTトークン、APPトークン、Webhookが作成されていること
-  - `Bot Token Scopes`で以下が有効であること
+  - `OAuth & Permissions`の`Bot Token Scopes`で以下が有効であること
     1. `channels:history`
     2. `chat:write`
-    3. `groups:history`
-    4. `im:history`
-    5. `incoming-webhook`
-    6. `mpim:history`
-    7. `users:read`
+    3. `incoming-webhook`
+    4. `users:read`
   - AppのSocket ModeがONになっていること
   - `Event Subscriptions`の`Enable Event`がONであること
+    - 「Socket Mode is enabled. You won’t need to specify a Request URL.」と書いてあること
     - `Subscribe to bot events`で以下が有効であること
       1. `message.channels`
-      2. `channels:history`
-      3. `message.groups`
-      4. `groups:history`
-      5. `message.im`
-      6. `im:history`
   - Slackで該当のチャンネルのインテグレーションにAppが追加されていること
-    - チャンネルに追加されていないと読み込まれない
+    - チャンネルに追加されていないと、チャンネルの内容を読み込むことができないため
 - `.env`が作成されていること
 
 ### 動かす
