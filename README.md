@@ -2,9 +2,9 @@
 
 - Discordの指定されたチャンネルに投稿されたメッセージをSlackに連携し、Slackの指定されたチャンネルに投稿されたメッセージをDiscordに連携します
 - 必要なもの
-  - [環境変数#環境変数]を見てください
-    - Discord側で必要なもの
+  - [環境変数](#環境変数)と[前提](#前提)を見てください
     - Slack側必要なもの(ちょっと面倒)
+    - Discord側で必要なもの
 - 考えてないもの
   - 2022年4月のメッセージコンテントのやつ(小規模なBotとして実行されることを想定/多分動くはず)
 
@@ -59,7 +59,7 @@
 
 - SlackのWebhook URL(SLACK_WEBHOOK_URL)に入っているIDをコンマ区切りで入力(このBOT_IDは無視する(Discordに連携しない))
   - 本当は勝手に無視するようにしたかったが、Slackに登録されるBOT_IDとWEBHOOKで投稿されるときのBOT_IDが異なっているため自動で判別できなかった
-  - Webhookを使わない仕組みならこんな無駄なことはしなくて良いのだろうけど、、、それはわからなかった。。。
+  - Webhookを使わない仕組みなら、こんなムダなことはしなくて良いのだろうけど、それはわからなかった……。
 - 例:
   - `https://hooks.slack.com/services/<team_id>/<BOT_ID>/<WEBHOOK_ID>`
     - SlackのWebhookを作るとこういう感じでURLが取得できるとする(上はテキトーです)
@@ -75,6 +75,7 @@
 ### 前提
 
 - poetryがインストールされていること
+  - `poetry -V`して`Poetry version 1.x.x`が返ればOK
 - Slack側でAppが作成されており、BOTトークン、APPトークン、Webhookが作成されていること
   - `OAuth & Permissions`の`Bot Token Scopes`で以下が有効であること
     1. `channels:history`
@@ -88,7 +89,18 @@
       1. `message.channels`
   - Slackで該当のチャンネルのインテグレーションにAppが追加されていること
     - チャンネルに追加されていないと、チャンネルの内容を読み込むことができないため
-- `.env`が作成されていること
+- [Discord側でBotが作成](https://discord.com/developers/applications/)されており、以下の状況であること
+  - 作成したDiscord Botのトークンを取得していること
+  - 特権インテントの一種であるメッセージ読み込み権限がONであること
+    - Privileged Gateway IntentsのMESSAGE CONTENT INTENTがON(初期設定はOFF)
+    - ＊[dicord.pyのゲートウェイインテント入門](https://discordpy.readthedocs.io/ja/latest/intents.html#privileged-intents)が分かりやすい
+  - Slackに連携したいDiscord側チャンネルで、Webhook URLを作成していること
+    - DiscordでWebhook URLを作成する方法は[こちら](https://support.discord.com/hc/ja/articles/228383668-%E3%82%BF%E3%82%A4%E3%83%88%E3%83%AB-Webhooks%E3%81%B8%E3%81%AE%E5%BA%8F%E7%AB%A0)
+- cogs/module/filesに `.env`が作成され、各種環境変数が設定されていること
+  - 同階層にある、`.env.sample`をコピーして作ると良い
+  - 「作成され、各種環境変数が設定」と書いたが、環境変数として登録されている状態ならOK
+    - たとえば、replitならToolsにあるsecretsで登録しておく
+    - ![Alt text](image.png)
 
 ### 動かす
 
@@ -98,3 +110,10 @@
 poetry install
 poetry run python discord2slackbot.py
 ```
+
+## 今後直すメモ
+
+- 後で見返したら、IGNORE_WEBHOOK_IDって何のために存在するの？　と思ったけど、DISCORD_WEBHOOK_URLで設定したURLの一部を使ってた
+  - DISCORD_WEBHOOK_URLは必須だし、IGNORE_WEBHOOK_IDという名前が意味不明。これは自動的に設定するべき
+  - BotはSlackに投げたくないって場合もありえるので、それは設定でON/OFFできてもいい気がする
+- 動かなくなる可能性があるし、discord.pyのバージョンアップをしておきたい
