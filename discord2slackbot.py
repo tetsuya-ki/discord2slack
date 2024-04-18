@@ -3,7 +3,7 @@ from discord.ext import commands
 from logging import basicConfig, getLogger
 from datetime import timedelta, timezone
 import discord, datetime
-import keep_alive
+# import keep_alive
 import slack2discord
 
 # 時間
@@ -44,6 +44,6 @@ if __name__ == '__main__':
     bot = Discord2SlackBot(command_prefix='/', intents=intents)
 
     # start a server
-    keep_alive.keep_alive()
+    # keep_alive.keep_alive()
     slack2discord.start_slack2discord()
     bot.run(setting.DISCORD_TOKEN)
