@@ -22,7 +22,7 @@ toml = "^0.10.2"
 pycryptodome = "^3.19.1"
 discord-py-interactions = "^3.0.2"
 slack-bolt = "^1.13.0"
-requests = "^2.31.0"
+requests = "^2.32.0"
 
 [tool.poetry.dev-dependencies]
 
