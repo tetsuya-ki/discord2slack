@@ -1,6 +1,8 @@
 # このBotについて
 
 - Discordの指定されたチャンネルに投稿されたメッセージをSlackに連携し、Slackの指定されたチャンネルに投稿されたメッセージをDiscordに連携します
+- 手順の例
+  - <https://scrapbox.io/marukot-ch/discord2slack%E3%81%AAbot%E3%82%92%E5%8B%95%E3%81%8B%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86>
 - 必要なもの
   - [環境変数](#環境変数)と[前提](#前提)を見てください
     - Slack側必要なもの(ちょっと面倒)
@@ -117,3 +119,12 @@ poetry run python discord2slackbot.py
   - DISCORD_WEBHOOK_URLは必須だし、IGNORE_WEBHOOK_IDという名前が意味不明。これは自動的に設定するべき
   - BotはSlackに投げたくないって場合もありえるので、それは設定でON/OFFできてもいい気がする
 - 動かなくなる可能性があるし、discord.pyのバージョンアップをしておきたい
+
+## 変えたメモ
+
+- 2024/4/19
+  - discord2slackbot.py
+    - keep_aliveをコメントアウト(もういらない気がする)
+  - slack2discord.py
+    - user_dictで投稿したユーザーを持つようにした(何回もSlackのAPI叩いたらユーザーリミット到達したため)
+    - 文字が書かれてない場合は対象外とか、SLACK_BOT_IDSが未記載の場合Botは対象外とかした
