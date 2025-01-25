@@ -1,6 +1,6 @@
 # このBotについて
 
-- Discordの指定されたチャンネルに投稿されたメッセージをSlackに連携し、Slackの指定されたチャンネルに投稿されたメッセージをDiscordに連携します
+- Discordの指定されたチャンネルに投稿されたメッセージをSlackに連携し、Slackの指定されたチャンネルに投稿されたメッセージをDiscordに連携します。2025年1月動作確認済。
 - 手順の例
   - <https://scrapbox.io/marukot-ch/discord2slack%E3%81%AAbot%E3%82%92%E5%8B%95%E3%81%8B%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86>
 - 必要なもの
@@ -128,3 +128,8 @@ poetry run python discord2slackbot.py
   - slack2discord.py
     - user_dictで投稿したユーザーを持つようにした(何回もSlackのAPI叩いたらユーザーリミット到達したため)
     - 文字が書かれてない場合は対象外とか、SLACK_BOT_IDSが未記載の場合Botは対象外とかした
+- 2025/1/25
+  - discordpy-interationsを削除(なんでimportしてたんだろう？)
+  - discord.pyを2.4.0に変更し、今でも使えるようにした
+    - cogとかをdiscord.py 2.xに対応(add_congをasyncにしたり、setup_hookとかもろもろ直したり)
+    - user.avatar_urlがアップデートによるエラーになるようになったのでuser.display_avatarに変更

@@ -1,5 +1,5 @@
 from discord.ext import commands
-from logging import getLogger, log
+from logging import getLogger
 from .modules import setting
 
 import discord, aiohttp, json
@@ -37,8 +37,8 @@ class Discord2SlackCog(commands.Cog):
             return
 
     async def post_to_slack(self, message: discord.Message):
-        avatar_url = str(message.author.avatar_url).replace('.webp', '.png')
-        guild_icon_url = str(message.guild.icon_url).replace('.webp', '.png')
+        avatar_url = str(message.author.display_avatar).replace('.webp', '.png')
+        guild_icon_url = str(message.guild.icon.url).replace('.webp', '.png')
         name = setting.DISCORD_NAME if setting.DISCORD_NAME else message.guild.name
 
         # Embed
@@ -129,6 +129,6 @@ class Discord2SlackCog(commands.Cog):
         return '不明なチャンネル'
 
 # Bot本体側からコグを読み込む際に呼び出される関数。
-def setup(bot):
+async def setup(bot):
     LOG.info('Discord2SlackCogを読み込む！')
-    bot.add_cog(Discord2SlackCog(bot))  # Discord2SlackCogにBotを渡してインスタンス化し、Botにコグとして登録する。
+    await bot.add_cog(Discord2SlackCog(bot))  # Discord2SlackCogにBotを渡してインスタンス化し、Botにコグとして登録する。

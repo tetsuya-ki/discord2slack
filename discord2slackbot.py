@@ -2,8 +2,7 @@ from cogs.modules import setting
 from discord.ext import commands
 from logging import basicConfig, getLogger
 from datetime import timedelta, timezone
-import discord, datetime
-# import keep_alive
+import discord, datetime, asyncio
 import slack2discord
 
 # 時間
@@ -25,14 +24,23 @@ class Discord2SlackBot(commands.Bot):
         super().__init__(command_prefix, case_insensitive=True, intents=intents, help_command=None)
         LOG.info('cogを読むぞ！')
 
-        # INITIAL_COGSに格納されている名前から、コグを読み込む。
+    async def setup_hook(self):
+        # INITIAL_EXTENSIONに格納されている名前からCogを読み込む。
+        LOG.info('cogを読むぞ！')
         for cog in INITIAL_EXTENSIONS:
-            self.load_extension(cog)
+            await self.load_extension(cog) # awaitが必要
 
     async def on_ready(self):
         LOG.info('We have logged in as {0.user}'.format(self))
         LOG.info(f"### guilds length ### \n{len(self.guilds)}")
         LOG.debug(f"### guilds ### \n{self.guilds}")
+
+async def main():
+    # Botの起動
+    async with bot:
+        LOG.debug(setting.DISCORD_TOKEN)
+        await bot.start(setting.DISCORD_TOKEN)
+        LOG.info('We have logged in as {0}'.format(bot.user))
 
 # Discord2SlackBotのインスタンス化、および、起動処理
 if __name__ == '__main__':
@@ -44,6 +52,5 @@ if __name__ == '__main__':
     bot = Discord2SlackBot(command_prefix='/', intents=intents)
 
     # start a server
-    # keep_alive.keep_alive()
     slack2discord.start_slack2discord()
-    bot.run(setting.DISCORD_TOKEN)
+    asyncio.run(main())
